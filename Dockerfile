@@ -15,7 +15,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     iputils-ping sshpass ncat rlwrap dirsearch naabu nikto netexec adb bloodyad coercer \
     enum4linux-ng pwncat chisel-common-binaries krb5-user gitleaks \
     build-essential python3-dev libssl-dev libffi-dev \
-    cmake ninja-build && \
+    cmake ninja-build pkg-config \
+    libcapstone-dev libglib2.0-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Quota-aware extraction for project assets. Agents invoke it on demand.
