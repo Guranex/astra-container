@@ -14,6 +14,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     file binutils p7zip-full jadx apktool tshark poppler-utils sqlite3 \
     iputils-ping sshpass ncat rlwrap dirsearch naabu nikto netexec adb bloodyad coercer \
     enum4linux-ng pwncat chisel-common-binaries krb5-user gitleaks \
+    python3-pwntools \
     build-essential python3-dev libssl-dev libffi-dev \
     cmake ninja-build pkg-config \
     libcapstone-dev libglib2.0-dev && \
@@ -28,7 +29,6 @@ USER root
 
 # pip 使用官方源
 RUN pip3 install --break-system-packages pycryptodome capstone && \
-    pip3 install --break-system-packages pwntools && \
     pip3 install --break-system-packages pymongo tccli awscli && \
     npm config set registry https://registry.npmmirror.com && \
     npm install -g @playwright/cli@latest @openai/codex@0.118.0 \
