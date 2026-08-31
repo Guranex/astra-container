@@ -37,8 +37,8 @@ USER kali
 RUN pip3 install --break-system-packages pycryptodome capstone && \
     pip3 install --break-system-packages pwntools && \
     pip3 install --break-system-packages pymongo tccli awscli && \
-    npm config set registry https://registry.npmmirror.com && \
-    npm install -g @playwright/cli@latest @openai/codex@0.118.0 \
+    sudo npm config set registry https://registry.npmmirror.com && \
+    sudo npm install -g @playwright/cli@latest @openai/codex@0.118.0 \
       @anthropic-ai/claude-code@2.1.98 @mariozechner/pi-coding-agent@0.73.0 && \
     cd /tmp && playwright-cli install
 
