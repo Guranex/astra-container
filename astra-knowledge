@@ -1,0 +1,38 @@
+#!/bin/sh
+# Search the Astra knowledge base from inside a worker container.
+# Requires ASTRA_SERVER; ASTRA_PROJECT_ID enables project-scoped search.
+# Usage: astra-knowledge search "<query>" [--global] [--limit N]
+set -eu
+
+if [ "${1:-}" != "search" ]; then
+  echo "usage: astra-knowledge search \"<query>\" [--global] [--limit N]" >&2
+  exit 2
+fi
+query="${2:-}"
+if [ -z "$query" ]; then
+  echo "astra-knowledge: query is required" >&2
+  exit 2
+fi
+shift 2
+scope="project"
+limit="5"
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --global) scope="all"; shift ;;
+    --limit) limit="${2:?astra-knowledge: --limit needs a value}"; shift 2 ;;
+    *) echo "astra-knowledge: unknown option: $1" >&2; exit 2 ;;
+  esac
+done
+: "${ASTRA_SERVER:?astra-knowledge: ASTRA_SERVER is not set}"
+
+payload=$(python3 - "$query" "$scope" "$limit" "${ASTRA_PROJECT_ID:-}" <<'PY'
+import json, sys
+body = {"query": sys.argv[1], "scope": sys.argv[2], "limit": int(sys.argv[3])}
+if body["scope"] == "project" and sys.argv[4]:
+    body["project_id"] = sys.argv[4]
+print(json.dumps(body, ensure_ascii=False))
+PY
+)
+curl -fsS "$ASTRA_SERVER/knowledge/search" \
+  -H 'Content-Type: application/json' \
+  -d "$payload"
